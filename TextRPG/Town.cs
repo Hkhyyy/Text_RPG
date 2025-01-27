@@ -2,6 +2,7 @@ namespace TextRPG;
 
 public class Town
 {
+    public static Status _status = new Status();
     public void Start()
     {
         Console.WriteLine("Welcome to the Sparta Town!");
@@ -28,12 +29,12 @@ public class Town
                 break;
         }
     }
-    
+
     void ShowStatus()
     {
-        Console.WriteLine("Status");
+        _status.ShowStatus();
     }
-    
+
     void Inventory()
     {
         Console.WriteLine("Inventory");

@@ -2,8 +2,9 @@ namespace TextRPG;
 
 public class GameIntro
 {
-    public string playerNmae;
-    public int playerJob;
+    public string playerName { get; set; }
+    // playerJob 는 키 벨류 형태
+    public Dictionary<int, string> playerJob { get; set; }
     
     public void Start()
     {
@@ -17,26 +18,29 @@ public class GameIntro
         Console.WriteLine("What is your name?");
         string name = Console.ReadLine();
         Console.WriteLine("Hello, {0}!", name);
-        playerNmae = name;
+        playerName = name;
     }
 
     void Job()
     {
+        // 직업 리스트
+        List<string> jobs = new List<string> { "Warrior", "Mage", "Archer", "Thief" };
+        
         Console.WriteLine("Select your job!");
-        Console.WriteLine("1. Warrior");
-        Console.WriteLine("2. Mage");
-        Console.WriteLine("3. Archer");
-        Console.WriteLine("4. Thief");
-        int job = Convert.ToInt32(Console.ReadLine());
+        foreach (var job in jobs)
+        {
+            Console.WriteLine("{0}. {1}", jobs.IndexOf(job) + 1, job);
+        }
+        int _selectJob = Convert.ToInt32(Console.ReadLine());
         // input validation
-        if (job < 1 || job > 4)
+        if (_selectJob < 1 || _selectJob > 4)
         {
             Console.WriteLine("잘못된 입력입니다.");
             Job();
         }
         else
         {
-            switch (job)
+            switch (_selectJob)
             {
                 case 1:
                     Console.WriteLine("You are a Warrior!");
@@ -52,6 +56,8 @@ public class GameIntro
                     break;
             }
         }
-        playerJob = job;
+        // 위에서 선택한 값이 playerJob에 저장됨
+        playerJob = new Dictionary<int, string> { { (_selectJob - 1), jobs[_selectJob - 1] } };
+        
     }
 }

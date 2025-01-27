@@ -1,16 +1,16 @@
-﻿using System.Runtime.InteropServices.JavaScript;
-
-namespace TextRPG
+﻿namespace TextRPG
 {
     class Program
     {
-        static GameIntro gameIntro = new GameIntro();
-        static Town town = new Town();
+        static Town _town = new Town();
         
         private static void Main(string[] args)
         {
-            gameIntro.Start();
-            town.Start();
+            if (Global.GameIntro.playerName == null)
+            {
+                Global.GameIntro.Start();
+            }
+            _town.Start();
         }
     }
 }
