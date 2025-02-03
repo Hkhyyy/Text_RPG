@@ -6,10 +6,7 @@
         
         private static void Main(string[] args)
         {
-            if (Global.GameIntro.playerName == null)
-            {
-                Global.GameIntro.Start();
-            }
+            Global.GameIntro.Start();
             _town.Start();
         }
     }

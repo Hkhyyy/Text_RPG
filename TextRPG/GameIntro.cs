@@ -2,26 +2,23 @@ namespace TextRPG;
 
 public class GameIntro
 {
-    public string playerName { get; set; }
-    // playerJob 는 키 벨류 형태
-    public Dictionary<int, string> playerJob { get; set; }
-    
     public void Start()
     {
-        Name();
-        Job();
+        string name = Name();
+        Player player = new Player(name);
+        Job(player);
     }
 
-    void Name()
+    string Name()
     {
         Console.WriteLine("Welcome to the Sparta Dungeon!");
         Console.WriteLine("What is your name?");
         string name = Console.ReadLine();
         Console.WriteLine("Hello, {0}!", name);
-        playerName = name;
+        return name;
     }
 
-    void Job()
+    void Job(Player player)
     {
         // 직업 리스트
         List<string> jobs = new List<string> { "Warrior", "Mage", "Archer", "Thief" };
@@ -31,33 +28,64 @@ public class GameIntro
         {
             Console.WriteLine("{0}. {1}", jobs.IndexOf(job) + 1, job);
         }
-        int _selectJob = Convert.ToInt32(Console.ReadLine());
-        // input validation
-        if (_selectJob < 1 || _selectJob > 4)
+
+        try
         {
-            Console.WriteLine("잘못된 입력입니다.");
-            Job();
-        }
-        else
-        {
-            switch (_selectJob)
+            int _selectJob = Convert.ToInt32(Console.ReadLine());
+            // input validation
+            if (_selectJob < 1 || _selectJob > 4)
             {
-                case 1:
-                    Console.WriteLine("You are a Warrior!");
-                    break;
-                case 2:
-                    Console.WriteLine("You are a Mage!");
-                    break;
-                case 3:
-                    Console.WriteLine("You are an Archer!");
-                    break;
-                case 4:
-                    Console.WriteLine("You are a Thief!");
-                    break;
+                Console.WriteLine("잘못된 입력입니다.\n");
+                Job(player);
             }
+            else
+            {
+                switch (_selectJob)
+                {
+                    case 1:
+                        Console.WriteLine("You are a Warrior!");
+                        break;
+                    case 2:
+                        Console.WriteLine("You are a Mage!");
+                        break;
+                    case 3:
+                        Console.WriteLine("You are an Archer!");
+                        break;
+                    case 4:
+                        Console.WriteLine("You are a Thief!");
+                        break;
+                }
+            }
+            // 위에서 선택한 값이 playerJob에 저장됨
+            Dictionary<int, string> playerJob = new Dictionary<int, string> { { (_selectJob - 1), jobs[_selectJob - 1] } };
+            player.Setjob(playerJob);
+            
+            Weapon weapon = new Weapon
+            {
+                Idx = 0,
+                Name = "낡은 검",
+                Type = "무기",
+                Attack = 10,
+                Information = "어쩌구 저쩌구",
+                SellPrice = 20,
+            };
+            
+            Armor armor = new Armor
+            {
+                Idx = 1,
+                Name = "낡은 방패",
+                Type = "방어구",
+                Defense = 5,
+                Information = "어쩌구 저쩌구",
+                SellPrice = 10,
+            };
+            
+            player.GetItem(weapon);
+            player.GetItem(armor);
         }
-        // 위에서 선택한 값이 playerJob에 저장됨
-        playerJob = new Dictionary<int, string> { { (_selectJob - 1), jobs[_selectJob - 1] } };
-        
+        catch (Exception e)
+        {
+            Job(player);
+        }
     }
 }
