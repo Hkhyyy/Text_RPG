@@ -2,17 +2,18 @@ namespace TextRPG;
 
 public class Player
 {
-    public static int playerLevel { get; set; }
-    public static string playerName { get; set; }
-    public static Dictionary<int, string> playerJob { get; set; }
-    public static float Attack { get; set; }
-    public static float AddAttack { get; set; }
-    public static float Defense { get; set; }
-    public static float AddDefense { get; set; }
-    public static int HP { get; set; }
-    public static int AddHP { get; set; }
-    public static int Gold { get; set; }
-    public static List<Item> Inventory { get; set; }
+    public int playerLevel { get; set; }
+    public string playerName { get; set; }
+    public Dictionary<int, string> playerJob { get; set; }
+    public float Attack { get; set; }
+    public float AddAttack { get; set; }
+    public float Defense { get; set; }
+    public float AddDefense { get; set; }
+    public int HP { get; set; }
+    public int AddHP { get; set; }
+    public float Gold { get; set; }
+    public int Exp { get; set; }
+    public List<Item> Inventory { get; set; }
 
     public Player(string name)
     {
@@ -25,6 +26,7 @@ public class Player
         HP = 50;
         AddHP = 0;
         Gold = 1500;
+        Exp = 0;
         Inventory = new List<Item>();
     }
 
@@ -36,13 +38,20 @@ public class Player
     // 아이템 획득
     public void GetItem(Item item)
     {
-        item.ApplyEffect(this);
         Inventory.Add(item);
     }
     
     // 아이템 장착
     public void EquipItem(Item item)
     {
+        // 기존에 장착된 아이템중 동일한 타입의 아이템이 있다면 해제하고 장착
+        foreach (var i in Inventory)
+        {
+            if (i.Type == item.Type && i.IsEquipped)
+            {
+                UnequipItem(i);
+            }
+        }
         item.IsEquipped = true;
         item.ApplyEffect(this);
     }
@@ -52,7 +61,6 @@ public class Player
     {
         item.IsEquipped = false;
         item.ApplyEffect(this);
-        Inventory.Remove(item);
     }
 
     // 아이템 판매

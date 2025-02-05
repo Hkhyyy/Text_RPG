@@ -3,7 +3,7 @@ namespace TextRPG;
 public class Inventory
 {
     static Town _town = new Town();
-    
+    public Player player = GameState.CurrentPlayer;
     public void ShowInventory()
     {
         Console.WriteLine("인벤토리");
@@ -15,6 +15,8 @@ public class Inventory
         Console.WriteLine("\n1. 장착관리");
         Console.WriteLine("0. 나가기");
         
+        Console.WriteLine("\n원하시는 행동을 입력해주세요.");
+        Console.Write(">>");
         string input = Console.ReadLine();
         switch(input)
         {
@@ -35,7 +37,10 @@ public class Inventory
     
     void EquipItem()
     {
-        List<Item>_inventory = Player.Inventory;
+        List<Item>_inventory = player.Inventory;
+        
+        Console.WriteLine(_inventory.Count);
+        
         Console.WriteLine("인벤토리 - 장착관리");
         Console.WriteLine("보유 중인 아이템을 관리할 수 있습니다.\n");
         Console.WriteLine("[아이템 목록]");
@@ -43,6 +48,8 @@ public class Inventory
         ItemList(true);
         
         Console.WriteLine("\n0. 나가기");
+        Console.WriteLine("\n원하시는 행동을 입력해주세요.");
+        Console.Write(">>");
         
         int input = Convert.ToInt32(Console.ReadLine());
         
@@ -60,53 +67,75 @@ public class Inventory
 
         input--;
         
-        if (_inventory[input]["isEquipped"])
+        Item selectedItem = _inventory[input];
+        
+        if (selectedItem.IsEquipped)
         {
-            _inventory[input]["isEquipped"] = false;
-            Console.WriteLine("{0}을(를) 해제했습니다.\n", _inventory[input]["info"]["name"]);
-            ShowInventory();
+            // 아이템 해제
+            player.UnequipItem(selectedItem);
+            Console.WriteLine("{0}을(를) 해제했습니다.\n", selectedItem.Name);
         }
         else
         {
-            _inventory[input]["isEquipped"] = true;
-            Console.WriteLine("{0}을(를) 장착했습니다.\n", _inventory[input]["info"]["name"]);
-            ShowInventory();
+            // 아이템 장착
+            player.EquipItem(selectedItem);
+            Console.WriteLine("{0}을(를) 장착했습니다.\n", selectedItem.Name);
         }
+        
+        ShowInventory();
     }
 
     void ItemList(bool type = false)
     {
-        List<Dictionary<string, dynamic>>_inventory = Global.GameIntro.playerInventory;
-        foreach (var item in _inventory)
+        List<Item> _inventory = player.Inventory;
+        foreach (var item in _inventory.Select((val, index) => (val, index)))
         {
+            var val = item.val;
+            var index = item.index;
+            
             string Equ = "";
-            if (item["isEquipped"])
+            if (val.IsEquipped)
             {
                 Equ = "[E]";
             }
-            
-            if (item["info"]["type"] == "무기")
+
+            if (val.Type == "무기")
             {
-                if (type)
+                Weapon weapon = val as Weapon;  // Weapon 타입으로 캐스팅
+
+                if (weapon != null)  // Weapon 타입일 경우
                 {
-                    Console.WriteLine("- {0} {1}{2} | ATK +{3} | {4}", item["idx"] + 1, Equ, item["info"]["name"], item["info"]["atk"], item["info"]["information"]);
+                    if (type)
+                    {
+                        // type이 true일 경우 더 자세한 정보를 출력
+                        Console.WriteLine("- {0} {1}{2} | ATK +{3} | {4}", index + 1, Equ, weapon.Name, weapon.Attack, weapon.Information);
+                    }
+                    else
+                    {
+                        // type이 false일 경우 간단히 출력
+                        Console.WriteLine("- {0}{1} | ATK +{2} | {3}", Equ, weapon.Name, weapon.Attack, weapon.Information);
+                    }
                 }
-                else
-                {
-                    Console.WriteLine("- {0}{1} | ATK +{2} | {3}", Equ, item["info"]["name"], item["info"]["atk"], item["info"]["information"]);
-                }
-                
-            } else if (item["info"]["type"] == "방어구")
+            }
+            else if (val.Type == "방어구")
             {
-                if (type)
+                Armor armor = val as Armor;  // Armor 타입으로 캐스팅
+
+                if (armor != null)  // Armor 타입일 경우
                 {
-                    Console.WriteLine("- {0} {1}{2} | DEF +{3} | {4}", item["idx"] + 1, Equ, item["info"]["name"], item["info"]["def"], item["info"]["information"]);
-                }
-                else
-                {
-                    Console.WriteLine("- {0}{1} | DEF +{2} | {3}",Equ, item["info"]["name"], item["info"]["def"], item["info"]["information"]);
+                    if (type)
+                    {
+                        // type이 true일 경우 더 자세한 정보를 출력
+                        Console.WriteLine("- {0} {1}{2} | DEF +{3} | {4}", index + 1, Equ, armor.Name, armor.Defense, armor.Information);
+                    }
+                    else
+                    {
+                        // type이 false일 경우 간단히 출력
+                        Console.WriteLine("- {0}{1} | DEF +{2} | {3}", Equ, armor.Name, armor.Defense, armor.Information);
+                    }
                 }
             }
         }
     }
+
 }

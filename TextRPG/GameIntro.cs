@@ -67,7 +67,7 @@ public class GameIntro
                 Type = "무기",
                 Attack = 10,
                 Information = "어쩌구 저쩌구",
-                SellPrice = 20,
+                BuyPrice = 100,
             };
             
             Armor armor = new Armor
@@ -77,11 +77,13 @@ public class GameIntro
                 Type = "방어구",
                 Defense = 5,
                 Information = "어쩌구 저쩌구",
-                SellPrice = 10,
+                BuyPrice = 50,
             };
             
             player.GetItem(weapon);
             player.GetItem(armor);
+            
+            GameState.CurrentPlayer = player;
         }
         catch (Exception e)
         {

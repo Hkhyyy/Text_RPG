@@ -6,8 +6,8 @@ public abstract class Item
     public string Name { get; set; }
     public string Type { get; set; }
     public string Information { get; set; }
-    public int SellPrice { get; set; }
-    // 장착 상태
+    public int BuyPrice { get; set; }
+    public bool IsSellable { get; set; } = false;
     public bool IsEquipped { get; set; }
 
     // 아이템 사용 시 플레이어 스탯에 영향을 미치는 메서드
@@ -22,11 +22,11 @@ public class Weapon : Item
     {
         if (IsEquipped)
         {
-            Player.AddAttack += Attack;            
+            player.AddAttack += Attack;
         }
         else
         {
-            Player.AddAttack -= Attack;
+            player.AddAttack -= Attack;
         }
     }
 }
@@ -39,11 +39,11 @@ public class Armor : Item
     {
         if (IsEquipped)
         {
-            Player.AddDefense += Defense;
+            player.AddDefense += Defense;
         }
         else
         {
-            Player.AddDefense -= Defense;
+            player.AddDefense -= Defense;
         }
     }
 }
